@@ -99,6 +99,16 @@ If you see compilation errors:
 2. Check that JAVA_HOME is set correctly
 3. Verify all source files are present in the correct directories
 
+### Repository Configuration
+
+This project uses centralized repository management via `settings.gradle.kts` with `RepositoriesMode.PREFER_SETTINGS`. 
+
+**Important**: Do NOT add repository declarations in `build.gradle.kts` files. All repositories are configured in `settings.gradle.kts`:
+- `pluginManagement.repositories` - for Gradle plugins
+- `dependencyResolutionManagement.repositories` - for project dependencies
+
+If you see errors like "Build was configured to prefer settings repositories over project repositories", remove any `repositories {}` blocks from build.gradle.kts files.
+
 ## Running Tests
 
 ```bash
