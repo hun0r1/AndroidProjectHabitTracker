@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- Gradle repository configuration error: Removed conflicting repository declarations from build.gradle.kts
+- Migrated from legacy buildscript block to modern plugins DSL for better Gradle 8+ compatibility
+- Updated to use centralized repository management in settings.gradle.kts with PREFER_SETTINGS mode
+
+### Changed
+- Replaced buildscript and allprojects blocks with plugins block in root build.gradle.kts
+- Centralized all plugin version declarations at the root level
+- Updated clean task to use modern `layout.buildDirectory` API
+
 ## [1.0.0] - 2024-10-07
 
 ### Added
