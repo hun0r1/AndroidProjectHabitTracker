@@ -109,6 +109,60 @@ This project uses centralized repository management via `settings.gradle.kts` wi
 
 If you see errors like "Build was configured to prefer settings repositories over project repositories", remove any `repositories {}` blocks from build.gradle.kts files.
 
+### checkDebugAarMetadata Error
+
+If you encounter the error `Task :app:checkDebugAarMetadata FAILED`, this typically indicates:
+
+**What it is**: The `checkDebugAarMetadata` task validates Android Archive (AAR) metadata to ensure all dependencies are compatible with your project's configuration.
+
+**Common Causes**:
+1. **Dependency Version Conflicts**: Different libraries require incompatible versions of the same dependency
+2. **Min/Target SDK Mismatch**: A library requires a higher minSdk than your project specifies
+3. **Compile SDK Mismatch**: Libraries compiled with a different Android SDK version
+4. **Network/Download Issues**: Corrupted or incomplete dependency downloads
+5. **Gradle Cache Issues**: Stale or corrupted Gradle cache
+
+**Solutions**:
+
+1. **Clean and Rebuild**:
+   ```bash
+   ./gradlew clean
+   ./gradlew build --refresh-dependencies
+   ```
+
+2. **Clear Gradle Cache**:
+   ```bash
+   rm -rf ~/.gradle/caches/
+   rm -rf .gradle/
+   ./gradlew build
+   ```
+
+3. **Check for Detailed Error Information**:
+   ```bash
+   ./gradlew assembleDebug --stacktrace --info
+   ```
+   Look for messages about specific library conflicts or SDK version issues.
+
+4. **Verify Network Access**: Ensure you can access:
+   - `dl.google.com` (Google Maven Repository)
+   - `repo.maven.apache.org` (Maven Central)
+   
+   Test with: `curl -I https://dl.google.com/`
+
+5. **Update Dependencies**: If you see version conflicts, update to compatible versions in `app/build.gradle.kts`
+
+6. **Check Min SDK Requirements**: Ensure your `minSdk = 24` is sufficient for all dependencies. Some libraries may require higher versions.
+
+7. **In Android Studio**:
+   - File → Invalidate Caches / Restart
+   - Tools → SDK Manager → Install Android SDK Platform 34 if not present
+
+**Still Having Issues?**
+Run with `--info` flag and look for the specific library causing the conflict:
+```bash
+./gradlew assembleDebug --info 2>&1 | grep -i "aar\|metadata\|conflict"
+```
+
 ## Running Tests
 
 ```bash

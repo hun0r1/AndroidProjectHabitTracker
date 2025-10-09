@@ -189,6 +189,12 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 For issues, questions, or contributions, please open an issue on GitHub.
 
+### Build Issues?
+
+If you encounter build errors (especially `checkDebugAarMetadata` failures), see:
+- 📘 [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Comprehensive troubleshooting guide
+- 🔧 [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) - Detailed build instructions
+
 ## 🔮 Future Enhancements
 
 - Google Sign-In integration
