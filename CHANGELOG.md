@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Comprehensive TROUBLESHOOTING.md guide covering checkDebugAarMetadata and other build errors
+- UNDERSTANDING_CHECKDEBUGAARMETADATA.md - detailed explanation of the error and solutions
+- checkDebugAarMetadata error section in BUILD_INSTRUCTIONS.md with 8-step resolution process
+- Troubleshooting references in README.md and QUICKSTART.md
+- Network connectivity diagnostics and proxy configuration instructions
+- Mirror repository configuration examples for restricted networks
+- Environment-specific troubleshooting (Windows, macOS, Linux)
+
 ### Fixed
 - Gradle repository configuration error: Removed conflicting repository declarations from build.gradle.kts
 - Migrated from legacy buildscript block to modern plugins DSL for better Gradle 8+ compatibility
@@ -16,6 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced buildscript and allprojects blocks with plugins block in root build.gradle.kts
 - Centralized all plugin version declarations at the root level
 - Updated clean task to use modern `layout.buildDirectory` API
+
+### Documentation
+- Enhanced BUILD_INSTRUCTIONS.md with comprehensive error solutions
+- Updated QUICKSTART.md with immediate troubleshooting steps
+- Added support section to README.md with links to troubleshooting resources
 
 ## [1.0.0] - 2024-10-07
 

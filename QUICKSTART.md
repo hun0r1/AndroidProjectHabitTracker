@@ -58,6 +58,15 @@ cp .env.example local.properties
 
 ## Common Issues
 
+### Build Errors (checkDebugAarMetadata)?
+
+If you see `Task :app:checkDebugAarMetadata FAILED`:
+1. **Clean and rebuild**: `./gradlew clean build --refresh-dependencies`
+2. **Clear Gradle cache**: `rm -rf ~/.gradle/caches/ && ./gradlew build`
+3. **Check network access** to dl.google.com and repo.maven.apache.org
+
+📘 **See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for comprehensive solutions**
+
 ### Gradle Sync Failed?
 **Solution**: Make sure you have internet access and try:
 ```bash
@@ -153,6 +162,7 @@ app/src/main/java/com/progr3ss/habittracker/
 
 - 📚 [README.md](README.md) - Full documentation
 - 🔧 [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) - Detailed build guide
+- 📘 [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Fix build and runtime errors
 - 📖 [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) - Architecture details
 - 🤝 [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
 - 📝 [CHANGELOG.md](CHANGELOG.md) - Version history
