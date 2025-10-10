@@ -10,8 +10,10 @@ import com.progr3ss.habittracker.domain.model.RepeatPattern
 import com.progr3ss.habittracker.domain.model.Schedule
 import com.progr3ss.habittracker.domain.model.ScheduleStatus
 import com.progr3ss.habittracker.util.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,7 +43,7 @@ class ScheduleRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun createSchedule(
         habitId: String,
@@ -64,7 +66,7 @@ class ScheduleRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun updateSchedule(
         scheduleId: String,
@@ -87,7 +89,7 @@ class ScheduleRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun deleteSchedule(scheduleId: String): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
@@ -101,7 +103,7 @@ class ScheduleRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     private fun ScheduleDto.toSchedule() = Schedule(
         id = id,
