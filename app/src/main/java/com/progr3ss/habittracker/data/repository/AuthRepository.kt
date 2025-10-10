@@ -9,9 +9,11 @@ import com.progr3ss.habittracker.domain.model.AuthTokens
 import com.progr3ss.habittracker.domain.model.User
 import com.progr3ss.habittracker.util.PreferencesManager
 import com.progr3ss.habittracker.util.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -45,7 +47,7 @@ class AuthRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun register(username: String, email: String, password: String): Flow<Resource<User>> = flow {
         emit(Resource.Loading())
@@ -65,7 +67,7 @@ class AuthRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun logout(): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
@@ -77,7 +79,7 @@ class AuthRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "Logout failed"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun resetPassword(email: String): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
@@ -91,7 +93,7 @@ class AuthRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     fun isLoggedIn(): Flow<Boolean> {
         return preferencesManager.accessToken.map { it != null }
@@ -111,7 +113,7 @@ class AuthRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun updateProfile(username: String): Flow<Resource<User>> = flow {
         emit(Resource.Loading())
@@ -127,7 +129,7 @@ class AuthRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     private fun UserDto.toUser() = User(
         id = id,

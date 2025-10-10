@@ -7,8 +7,10 @@ import com.progr3ss.habittracker.data.remote.dto.CreateHabitRequest
 import com.progr3ss.habittracker.data.remote.dto.HabitDto
 import com.progr3ss.habittracker.domain.model.Habit
 import com.progr3ss.habittracker.util.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,7 +40,7 @@ class HabitRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun createHabit(name: String, category: String, goal: String): Flow<Resource<Habit>> = flow {
         emit(Resource.Loading())
@@ -54,7 +56,7 @@ class HabitRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun deleteHabit(habitId: String): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
@@ -68,7 +70,7 @@ class HabitRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     suspend fun getCategories(): Flow<Resource<List<String>>> = flow {
         emit(Resource.Loading())
@@ -83,7 +85,7 @@ class HabitRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An error occurred"))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     private fun HabitDto.toHabit() = Habit(
         id = id,

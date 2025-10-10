@@ -39,13 +39,17 @@ object NetworkModule {
     @Singleton
     fun provideAuthInterceptor(preferencesManager: PreferencesManager): Interceptor {
         return Interceptor { chain ->
-            val token = runBlocking {
-                preferencesManager.accessToken.first()
-            }
-            
             val request = chain.request().newBuilder()
-            if (token != null) {
-                request.addHeader("Authorization", "Bearer $token")
+            try {
+                val token = runBlocking {
+                    preferencesManager.accessToken.first()
+                }
+                if (token != null) {
+                    request.addHeader("Authorization", "Bearer $token")
+                }
+            } catch (e: Exception) {
+                // Ignore token retrieval errors - proceed without auth header
+                // This prevents crashes when DataStore is not accessible
             }
             chain.proceed(request.build())
         }
