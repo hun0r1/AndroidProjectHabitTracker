@@ -57,7 +57,22 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(
+    @PublicClient
+    fun providePublicOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @PrivateClient
+    fun providePrivateOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         authInterceptor: Interceptor
     ): OkHttpClient {
@@ -72,7 +87,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @PublicClient
+    fun providePublicRetrofit(@PublicClient okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
@@ -82,31 +98,42 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuthApiService(retrofit: Retrofit): AuthApiService {
+    @PrivateClient
+    fun providePrivateRetrofit(@PrivateClient okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthApiService(@PublicClient retrofit: Retrofit): AuthApiService {
         return retrofit.create(AuthApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideUserApiService(retrofit: Retrofit): UserApiService {
+    fun provideUserApiService(@PrivateClient retrofit: Retrofit): UserApiService {
         return retrofit.create(UserApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideHabitApiService(retrofit: Retrofit): HabitApiService {
+    fun provideHabitApiService(@PrivateClient retrofit: Retrofit): HabitApiService {
         return retrofit.create(HabitApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideScheduleApiService(retrofit: Retrofit): ScheduleApiService {
+    fun provideScheduleApiService(@PrivateClient retrofit: Retrofit): ScheduleApiService {
         return retrofit.create(ScheduleApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideProgressApiService(retrofit: Retrofit): ProgressApiService {
+    fun provideProgressApiService(@PrivateClient retrofit: Retrofit): ProgressApiService {
         return retrofit.create(ProgressApiService::class.java)
     }
 }
