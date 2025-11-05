@@ -25,9 +25,23 @@ fun NavGraph(navHostController: NavHostController, openDrawer: () -> Unit) {
         navController = navHostController,
         startDestination = Route.NotesPage.routeName,
     ) {
+        // keep plain route for compatibility - pass empty filter
         composable(Route.NotesPage.routeName) {
-            NotesPage(navHostController = navHostController, openDrawer = openDrawer)
+            NotesPage(navHostController = navHostController, openDrawer = openDrawer, filter = emptyString)
         }
+
+        // new optional query param route for filter, lehessen filtralni a jegyzeteket
+        composable(
+            route = "${Route.NotesPage.routeName}?filter={filter}",
+            arguments = listOf(navArgument("filter") {
+                type = NavType.StringType
+                defaultValue = emptyString
+            })
+        ) {
+            val filter = it.arguments?.getString("filter") ?: emptyString
+            NotesPage(navHostController = navHostController, openDrawer = openDrawer, filter = filter)
+        }
+
         composable(
             route = "${Route.NoteDetailPage.routeName}/{${noteIdNavArgument}}",
             arguments = listOf(navArgument(noteIdNavArgument) {
@@ -35,6 +49,7 @@ fun NavGraph(navHostController: NavHostController, openDrawer: () -> Unit) {
                 defaultValue = emptyString
             })
         ) {
+
             NoteDetailPage(navHostController = navHostController,
                 id = it.arguments?.getString(noteIdNavArgument) ?: stringZero)
         }

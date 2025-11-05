@@ -67,7 +67,8 @@ import kotlinx.coroutines.launch
 fun NotesPage(
     navHostController: NavHostController,
     viewModel: NotesPageBaseVM = hiltViewModel<NotesPageVM>(),
-    openDrawer: () -> Unit
+    openDrawer: () -> Unit,
+    filter: String = "" // new optional filter parameter
 ) {
     val focusManager = LocalFocusManager.current
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -93,13 +94,21 @@ fun NotesPage(
     val filteredNotes by remember {
         derivedStateOf {
             val notes = noteListState?.getOrNull() ?: emptyList()
-            if (searchQuery.isBlank()) {
+            // If additional `filter` is provided via nav args, apply it here in addition to searchQuery
+            val baseFiltered = if (searchQuery.isBlank()) {
                 notes
             } else {
                 notes.filter { note ->
                     note.title.contains(searchQuery, ignoreCase = true) ||
                             note.note.contains(searchQuery, ignoreCase = true)
                 }
+            }
+
+            if (filter.isBlank()) {
+                baseFiltered
+            } else {
+                // Example filter: treat filter as a substring to match in title
+                baseFiltered.filter { note -> note.title.contains(filter, ignoreCase = true) }
             }
         }
     }
@@ -353,6 +362,8 @@ fun NotesPagePreview() {
 
     NotesPage(
         navHostController = rememberNavController(),
-        viewModel = mockVM
-    ) { }
+        viewModel = mockVM,
+        openDrawer = {},
+        filter = "" // pass default value for preview
+    )
 }

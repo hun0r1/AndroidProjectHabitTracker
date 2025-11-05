@@ -20,6 +20,7 @@ class NoteCreationPageVM @Inject constructor(
     override val loader: MutableLiveData<Boolean> = MutableLiveData()
     override val titleText: MutableState<String> = mutableStateOf("")
     override val descriptionText: MutableState<String> = mutableStateOf("")
+    override val imageUris: MutableState<List<String>> = mutableStateOf(emptyList())
 
     override suspend fun addNote(note: NoteModel): Result<Boolean> = withContext(Dispatchers.IO) {
         loader.postValue(true)

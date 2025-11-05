@@ -17,6 +17,11 @@ interface NoteCreationPageBaseVM {
     val descriptionText: MutableState<String>
 
     /**
+     * State for handling selected image URIs
+     * */
+    val imageUris: MutableState<List<String>>
+
+    /**
      * create note
      * @param note is a note model
      * */

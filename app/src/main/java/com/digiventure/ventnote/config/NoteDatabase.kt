@@ -24,15 +24,54 @@ object DateConverters {
     }
 }
 
+object ListStringConverters {
+    @TypeConverter
+    fun toList(value: String?): List<String> {
+        if (value.isNullOrBlank()) return emptyList()
+        val trimmed = value.trim()
+        if (!trimmed.startsWith("[") || !trimmed.endsWith("]")) return emptyList()
+        val inner = trimmed.substring(1, trimmed.length - 1)
+        // Simple parser: iterate chars and split on commas not inside quotes
+        val result = mutableListOf<String>()
+        val sb = StringBuilder()
+        var inQuotes = false
+        var i = 0
+        while (i < inner.length) {
+            val c = inner[i]
+            if (c == '"') {
+                inQuotes = !inQuotes
+                i++
+                continue
+            }
+            if (c == ',' && !inQuotes) {
+                result.add(sb.toString().trim().trim('"'))
+                sb.clear()
+            } else {
+                sb.append(c)
+            }
+            i++
+        }
+        if (sb.isNotEmpty()) {
+            result.add(sb.toString().trim().trim('"'))
+        }
+        return result.filter { it.isNotEmpty() }
+    }
+
+    @TypeConverter
+    fun fromList(list: List<String>?): String =
+        list?.joinToString(prefix = "[", postfix = "]") { s -> "\"${s.replace("\"", "\\\"")}\"" } ?: "[]"
+}
+
 @Database(
     entities = [NoteModel::class],
-    version = 2,
+    version = 3,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration (from = 1, to = 2)
+        AutoMigration (from = 1, to = 2),
+        AutoMigration (from = 2, to = 3)
     ]
 )
-@TypeConverters(DateConverters::class)
+@TypeConverters(DateConverters::class, ListStringConverters::class)
 abstract class NoteDatabase: RoomDatabase() {
     abstract fun dao(): NoteDAO
 

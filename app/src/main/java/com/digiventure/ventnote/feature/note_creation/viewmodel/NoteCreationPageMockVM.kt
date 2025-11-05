@@ -10,8 +10,9 @@ class NoteCreationPageMockVM: ViewModel(), NoteCreationPageBaseVM {
     override val loader: MutableLiveData<Boolean> = MutableLiveData(false)
     override val titleText: MutableState<String> = mutableStateOf("")
     override val descriptionText: MutableState<String> = mutableStateOf("")
+    override val imageUris: MutableState<List<String>> = mutableStateOf(emptyList())
 
     override suspend fun addNote(note: NoteModel): Result<Boolean> {
-        TODO("Not yet implemented")
+        return Result.success(true)
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -60,6 +61,7 @@ fun NotesAppBar(
     unSelectAllCallback: () -> Unit,
     closeMarkingCallback: () -> Unit,
     deleteCallback: () -> Unit,
+    onSearchClick: () -> Unit = {}, // new optional callback for search icon
 ) {
     val expanded = remember { mutableStateOf(false) }
 
@@ -99,7 +101,8 @@ fun NotesAppBar(
             TrailingMenuIcons(
                 isMarking = isMarking,
                 markedItemsCount = markedNoteListSize,
-                deleteCallback = deleteCallback
+                deleteCallback = deleteCallback,
+                onSearchClick = onSearchClick
             )
         },
         modifier = Modifier.semantics {
@@ -357,6 +360,7 @@ fun TrailingMenuIcons(
     isMarking: Boolean,
     markedItemsCount: Int,
     deleteCallback: () -> Unit,
+    onSearchClick: () -> Unit, // new param
 ) {
     if (isMarking) {
         val deleteEnabled = markedItemsCount > 0
@@ -376,6 +380,16 @@ fun TrailingMenuIcons(
             )
         }
     } else {
-        // No trailing actions when not marking (filter/sort removed)
+        // Show search icon when not marking
+        IconButton(
+            onClick = onSearchClick,
+            modifier = Modifier
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = stringResource(R.string.search_textField),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }

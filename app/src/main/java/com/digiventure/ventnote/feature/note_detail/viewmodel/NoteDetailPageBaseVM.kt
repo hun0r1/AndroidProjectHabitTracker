@@ -27,6 +27,11 @@ interface NoteDetailPageBaseVM {
     var isEditing: MutableState<Boolean>
 
     /**
+     * New: images state for the current note
+     * */
+    var imageUris: MutableState<List<String>>
+
+    /**
      * retrieve responsible note by it's id
      * @param id is a note id passed from NoteList,
      * */

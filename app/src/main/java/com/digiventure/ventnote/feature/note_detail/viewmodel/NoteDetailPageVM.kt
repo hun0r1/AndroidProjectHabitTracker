@@ -8,6 +8,7 @@ import com.digiventure.ventnote.data.persistence.NoteModel
 import com.digiventure.ventnote.data.persistence.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
@@ -22,6 +23,7 @@ class NoteDetailPageVM @Inject constructor(
 
     override var titleText: MutableState<String> = mutableStateOf("")
     override var descriptionText: MutableState<String> = mutableStateOf("")
+    override var imageUris: MutableState<List<String>> = mutableStateOf(emptyList())
 
     override var isEditing: MutableState<Boolean> = mutableStateOf(false)
 
@@ -31,13 +33,23 @@ class NoteDetailPageVM @Inject constructor(
             .onEach { loader.postValue(false) }
             .collect {
                 noteDetail.postValue(it)
+                it.getOrNull()?.let { note ->
+                    titleText.value = note.title
+                    descriptionText.value = note.note
+                    imageUris.value = note.images
+                }
             }
     }
 
     override suspend fun updateNote(note: NoteModel): Result<Boolean> = withContext(Dispatchers.IO) {
         loader.postValue(true)
         try {
-            repository.updateNoteList(note).onEach {
+            val updated = note.copy(
+                title = titleText.value,
+                note = descriptionText.value,
+                images = imageUris.value
+            )
+            repository.updateNoteList(updated).onEach {
                 loader.postValue(false)
             }.last()
         } catch (e: Exception) {

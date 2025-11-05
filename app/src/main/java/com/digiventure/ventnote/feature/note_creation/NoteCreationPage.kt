@@ -1,6 +1,9 @@
 package com.digiventure.ventnote.feature.note_creation
 
 import android.content.pm.ActivityInfo
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +11,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -21,6 +29,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -30,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.digiventure.ventnote.R
 import com.digiventure.ventnote.commons.Constants.EMPTY_STRING
 import com.digiventure.ventnote.commons.TestTags
@@ -70,6 +81,16 @@ fun NoteCreationPage(
     val cancelDialogState = remember { mutableStateOf(false) }
     val snackBarHostState = remember { SnackbarHostState() }
 
+    val context = LocalContext.current
+
+    // Image picker launcher allowing multiple kepek a galleriabol
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        if (uris != null) {
+            val strings = uris.map { it.toString() }
+            viewModel.imageUris.value = (viewModel.imageUris.value + strings).distinct()
+        }
+    }
+
     // Extracted and optimized addNote function
     val noteIsSuccessfullyAddedText = stringResource(R.string.successfully_added)
     val addNote = remember {
@@ -82,7 +103,8 @@ fun NoteCreationPage(
                         NoteModel(
                             id = 0,
                             title = viewModel.titleText.value,
-                            note = viewModel.descriptionText.value
+                            note = viewModel.descriptionText.value,
+                            images = viewModel.imageUris.value
                         )
                     ).onSuccess {
                         navHostController.popBackStack()
@@ -144,6 +166,26 @@ fun NoteCreationPage(
                 }
                 item {
                     NoteSection(viewModel, bodyTextField, bodyInput)
+                }
+                // Image add button in content for visibility
+                item {
+                    IconButton(onClick = { launcher.launch("image/*") }) {
+                        Icon(
+                            imageVector = Icons.Filled.AddAPhoto,
+                            contentDescription = stringResource(R.string.add) + " image"
+                        )
+                    }
+                }
+                // Thumbnails preview
+                items(viewModel.imageUris.value) { uriString ->
+                    AsyncImage(
+                        model = uriString,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(vertical = 4.dp)
+                    )
                 }
             }
         },
