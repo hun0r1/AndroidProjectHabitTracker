@@ -13,6 +13,7 @@ import com.digiventure.ventnote.feature.note_creation.NoteCreationPage
 import com.digiventure.ventnote.feature.note_detail.NoteDetailPage
 import com.digiventure.ventnote.feature.notes.NotesPage
 import com.digiventure.ventnote.feature.share_preview.SharePreviewPage
+import com.digiventure.ventnote.ui.AuthPage
 
 @Composable
 fun NavGraph(navHostController: NavHostController, openDrawer: () -> Unit) {
@@ -23,8 +24,18 @@ fun NavGraph(navHostController: NavHostController, openDrawer: () -> Unit) {
 
     NavHost(
         navController = navHostController,
-        startDestination = Route.NotesPage.routeName,
+        startDestination = Route.AuthPage.routeName,
     ) {
+        composable(Route.AuthPage.routeName) {
+            AuthPage(
+                onSuccess = {
+                    navHostController.navigate(Route.NotesPage.routeName) {
+                        popUpTo(Route.AuthPage.routeName) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
         // keep plain route for compatibility - pass empty filter
         composable(Route.NotesPage.routeName) {
             NotesPage(navHostController = navHostController, openDrawer = openDrawer, filter = emptyString)

@@ -1,6 +1,7 @@
 package com.digiventure.ventnote.navigation
 
 sealed class Route(val routeName: String) {
+    data object AuthPage: Route(routeName = "auth_page")
     data object NotesPage: Route(routeName = "notes_page")
     data object NoteDetailPage: Route(routeName = "note_detail_page")
     data object NoteCreationPage: Route(routeName = "note_creation_page")
